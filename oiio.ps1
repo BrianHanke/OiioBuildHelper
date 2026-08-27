@@ -39,7 +39,7 @@ $visualStudioEdition = "Community" # Found in C:\Program Files\Microsoft Visual 
 
 $pauseAfterStep = $false # Wait for key press after each build step
 
-# Post-dependency setup tasks
+# Post-setup tasks
 $loadSolution = $false # Load OpenImageIO.sln in Visual Studio
 $buildOiiotool = $true # Build and test oiiotool
 
@@ -72,7 +72,7 @@ $Path = @(
 	"$env:SystemRoot\System32\WindowsPowerShell\v1.0\",
 	"C:\Program Files\Git\cmd",
 	"C:\Program Files\CMake\bin",
-	"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\"
+	"C:\Program Files\Microsoft Visual Studio\$visualStudioVersion\$visualStudioEdition\Common7\IDE\"
 )
 $env:PATH = $Path -join ';'
 
@@ -112,8 +112,7 @@ function Build-Task {
 	param(
 		[string]$Message,
 		[scriptblock]$Action
-
-		)
+	)
 	Write-Host "`n$Message...`n" -ForegroundColor Cyan
 	& $Action
 
@@ -421,19 +420,26 @@ Build-Task "Configuring OpenImageIO" {
 	Copy-Item "$ffmpegRoot\bin\*.dll" -Destination $BinRelease -Force
 }
 
+# Print elapsed time
 $sw.Stop()
 $elapsed = $sw.Elapsed
 Write-Host ("`nTotal configuration time: {0}m {1}s" -f [math]::Truncate($elapsed.TotalMinutes), $elapsed.Seconds) -ForegroundColor Green
 
+# Optional final tasks
 if ($loadSolution) {
-	devenv "$oiioRoot/build/OpenImageIO.sln"
+	Build-Task "Launching Visual Studio" {
+		devenv "$oiioRoot/build/OpenImageIO.sln"
+	}
 }
 
 if ($buildOiiotool) {
-	Set-Location $oiioRoot
-	cmake --build build --config Release --target oiiotool
+	Build-Task "Building oiiotool" {
+		Set-Location $oiioRoot
+		cmake --build build --config Release --target oiiotool
+	}
 
-	# Test oiiotool
-	Set-Location $oiioRoot/build/bin/Release
-	./oiiotool --help
+	Build-Task "Testing oiiotool" {
+		Set-Location $oiioRoot/build/bin/Release
+		./oiiotool --help
+	}
 }
