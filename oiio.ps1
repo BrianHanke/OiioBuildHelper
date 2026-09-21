@@ -350,7 +350,7 @@ Build-Task "Setting Up LibRaw" {
 }
 
 # FFmpeg
-Build-Task "Setting Up FFpeg" {
+Build-Task "Setting Up FFmpeg" {
 	$FfmpegZip = Join-Path $env:TEMP "ffmpeg-master-latest-win64-gpl-shared.zip"
 	$FfmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip"
 
