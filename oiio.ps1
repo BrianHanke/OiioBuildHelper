@@ -58,7 +58,7 @@ $robinmapRoot = "$projRoot/robin-map"
 $oiioRoot = "$projRoot/oiio"
 $freetypeRoot = "$projRoot/freetype"
 $webpRoot = "$projRoot/webp"
-$openjpegRoot = "$projRoot/openjpg"
+$openjpegRoot = "$projRoot/openjpeg"
 $rawRoot = "$projRoot/LibRaw-0.22.2"
 $ffmpegRoot = "$projRoot/ffmpeg-master-latest-win64-gpl-shared"
 
